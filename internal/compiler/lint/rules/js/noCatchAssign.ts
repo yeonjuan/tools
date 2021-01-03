@@ -11,14 +11,27 @@ import {descriptions} from "@internal/diagnostics";
 export default createVisitor({
 	name: "js/noCatchAssign",
 	enter(path) {
-		const {node, context, scope} = path;
+		const {node} = path;
 
-		if (node.type === "JSAssignmentIdentifier") {
-			const binding = scope.getBinding(node.name);
+		if (node.type === "JSCatchClause") {
+			path.traverse(
+				"body",
+				(childPath) => {
+					const child = childPath.node;
+					const scope = childPath.scope;
+					const context = childPath.context;
+					if (child.type === "JSAssignmentIdentifier") {
+						const binding = scope.getBinding(child.name);
 
-			if (binding?.kind === "catch") {
-				context.addNodeDiagnostic(node, descriptions.LINT.JS_NO_CATCH_ASSIGN);
-			}
+						if (binding?.kind === "catch") {
+							context.addNodeDiagnostic(
+								child,
+								descriptions.LINT.JS_NO_CATCH_ASSIGN,
+							);
+						}
+					}
+				},
+			);
 		}
 
 		return signals.retain;
