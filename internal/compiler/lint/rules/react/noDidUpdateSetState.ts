@@ -5,23 +5,10 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-import {Path, createVisitor, signals} from "@internal/compiler";
+import {createVisitor, signals} from "@internal/compiler";
 import {descriptions} from "@internal/diagnostics";
 import {doesNodeMatchPattern, isConditional} from "@internal/js-ast-utils";
 import {insideClassComponent} from "../../utils/react";
-
-function inComponentDidUpdate(path: Path): boolean {
-	const func = path.findAncestry(({node}) => isConditional(node)) !== undefined;
-	return (
-		!func &&
-		path.findAncestry(({node}) =>
-			node.type === "JSClassMethod" &&
-			node.key.type === "JSStaticPropertyKey" &&
-			node.key.value.type === "JSIdentifier" &&
-			node.key.value.name === "componentDidUpdate"
-		) !== undefined
-	);
-}
 
 export default createVisitor({
 	name: "react/noDidUpdateSetState",
@@ -29,13 +16,27 @@ export default createVisitor({
 		const {node} = path;
 
 		if (
-			doesNodeMatchPattern(node, "this.setState") &&
-			insideClassComponent(path) &&
-			inComponentDidUpdate(path)
+			node.type === "JSClassMethod" &&
+			node.key.type === "JSStaticPropertyKey" &&
+			node.key.value.type === "JSIdentifier" &&
+			node.key.value.name === "componentDidUpdate" &&
+			insideClassComponent(path)
 		) {
-			path.context.addNodeDiagnostic(
-				node,
-				descriptions.LINT.REACT_NO_DID_UPDATE_SET_STATE,
+			path.traverse(
+				"body",
+				(childPath) => {
+					const childNode = childPath.node;
+					if (
+						doesNodeMatchPattern(childNode, "this.setState") &&
+						childPath.findAncestry(({node}) => isConditional(node)) ===
+						undefined
+					) {
+						childPath.context.addNodeDiagnostic(
+							childNode,
+							descriptions.LINT.REACT_NO_DID_UPDATE_SET_STATE,
+						);
+					}
+				},
 			);
 		}
 
