@@ -1,21 +1,7 @@
-import {Path, createVisitor, signals} from "@internal/compiler";
+import {createVisitor, signals} from "@internal/compiler";
 import {descriptions} from "@internal/diagnostics";
 import {doesNodeMatchPattern, isConditional} from "@internal/js-ast-utils";
 import {insideClassComponent} from "../../utils/react";
-
-function inComponentWillUpdate(path: Path): boolean {
-	const func = path.findAncestry(({node}) => isConditional(node)) !== undefined;
-	return (
-		!func &&
-		path.findAncestry(({node}) =>
-			node.type === "JSClassMethod" &&
-			node.key.type === "JSStaticPropertyKey" &&
-			node.key.value.type === "JSIdentifier" &&
-			(node.key.value.name === "componentWillUpdate" ||
-			node.key.value.name === "UNSAFE_componentWillUpdate")
-		) !== undefined
-	);
-}
 
 export default createVisitor({
 	name: "react/noWillUpdateSetState",
@@ -23,13 +9,28 @@ export default createVisitor({
 		const {node} = path;
 
 		if (
-			doesNodeMatchPattern(node, "this.setState") &&
-			insideClassComponent(path) &&
-			inComponentWillUpdate(path)
+			node.type === "JSClassMethod" &&
+			node.key.type === "JSStaticPropertyKey" &&
+			node.key.value.type === "JSIdentifier" &&
+			(node.key.value.name === "componentWillUpdate" ||
+			node.key.value.name === "UNSAFE_componentWillUpdate") &&
+			insideClassComponent(path)
 		) {
-			path.context.addNodeDiagnostic(
-				node,
-				descriptions.LINT.REACT_NO_WILL_UPDATE_SET_STATE,
+			path.traverse(
+				"body",
+				(childPath) => {
+					const childNode = childPath.node;
+					if (
+						doesNodeMatchPattern(childNode, "this.setState") &&
+						childPath.findAncestry(({node}) => isConditional(node)) ===
+						undefined
+					) {
+						childPath.context.addNodeDiagnostic(
+							childNode,
+							descriptions.LINT.REACT_NO_WILL_UPDATE_SET_STATE,
+						);
+					}
+				},
 			);
 		}
 
