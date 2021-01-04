@@ -10,6 +10,7 @@ export default createVisitor({
 
 		if (
 			node.type === "JSCallExpression" &&
+			parent.type !== "JSExpressionStatement" &&
 			doesNodeMatchReactPattern(
 				node.callee,
 				scope,
@@ -18,8 +19,7 @@ export default createVisitor({
 					packageName: "react-dom",
 					importName: "ReactDOM",
 				},
-			) &&
-			parent.type !== "JSExpressionStatement"
+			)
 		) {
 			path.context.addNodeDiagnostic(
 				node,
