@@ -177,12 +177,12 @@ export default createVisitor({
 					keyValue = keyAttribute.value.expression.name;
 				}
 			}
-			const functionExpression = path.findAncestry((path) => {
-				return isFunctionNode(path.node);
-			});
-
-			if (keyValue && functionExpression) {
+			if (keyValue) {
+				const functionExpression = path.findAncestry((path) => {
+					return isFunctionNode(path.node);
+				});
 				if (
+					functionExpression &&
 					hasArrayMethod(functionExpression) &&
 					hasArrayIndexKey(keyValue, functionExpression.node)
 				) {
