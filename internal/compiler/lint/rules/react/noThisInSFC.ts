@@ -35,13 +35,12 @@ export default createVisitor({
 			});
 
 			if (hasJSX) {
-				const isFunction = hasJSX.findAncestry((path) => {
-					return isFunctionNode(path.node);
-				});
-
-				const declaration = hasJSX.node.type === "JSVariableDeclarator";
-
-				if (isFunction || declaration) {
+				if (
+					hasJSX.node.type === "JSVariableDeclarator" ||
+					hasJSX.findAncestry((path) => {
+						return isFunctionNode(path.node);
+					})
+				) {
 					path.context.addNodeDiagnostic(
 						node,
 						descriptions.LINT.REACT_NO_THIS_IN_SFC,
