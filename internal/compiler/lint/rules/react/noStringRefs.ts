@@ -29,7 +29,7 @@ export default createVisitor({
 	enter(path) {
 		const {context, node} = path;
 
-		if (insideClassComponent(path) && doesNodeMatchPattern(node, "this.refs")) {
+		if (doesNodeMatchPattern(node, "this.refs") && insideClassComponent(path)) {
 			context.addNodeDiagnostic(
 				node,
 				descriptions.LINT.REACT_NO_STRING_REFS(
