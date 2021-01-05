@@ -9,7 +9,16 @@ import {createVisitor, signals} from "@internal/compiler";
 import {template} from "@internal/js-ast-utils";
 import {descriptions} from "@internal/diagnostics";
 
-const OPERATORS_TO_CHECK = [">", ">=", "<", "<=", "==", "===", "!=", "!=="];
+const OPERATORS_TO_CHECK = new Set([
+	">",
+	">=",
+	"<",
+	"<=",
+	"==",
+	"===",
+	"!=",
+	"!==",
+]);
 
 function isNegZero(node: AnyNode): boolean {
 	return (
@@ -27,7 +36,7 @@ export default createVisitor({
 
 		if (
 			node.type === "JSBinaryExpression" &&
-			OPERATORS_TO_CHECK.includes(node.operator) &&
+			OPERATORS_TO_CHECK.has(node.operator) &&
 			(isNegZero(node.left) || isNegZero(node.right))
 		) {
 			if (node.operator === "===") {
