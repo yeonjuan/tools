@@ -315,11 +315,8 @@ export function createWriteStream(
 }
 
 // createReadStream
-export function createReadStream(
-	path: AbsoluteFilePath,
-	opts?: Parameters<typeof fs.createReadStream>[1],
-): fs.ReadStream {
-	return fs.createReadStream(path.join(), opts);
+export function createReadStream(path: AbsoluteFilePath): fs.ReadStream {
+	return fs.createReadStream(path.join(), {highWaterMark: 128 * 1_024});
 }
 
 // Super special sync methods that we should only use sparingly if there's absolutely no way to do them async
