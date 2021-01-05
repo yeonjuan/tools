@@ -1,7 +1,20 @@
-import {createVisitor, signals} from "@internal/compiler";
+import {Path, createVisitor, signals} from "@internal/compiler";
 import {descriptions} from "@internal/diagnostics";
 import {doesNodeMatchPattern, isConditional} from "@internal/js-ast-utils";
 import {insideClassComponent} from "../../utils/react";
+
+function inComponentDidMount(path: Path): boolean {
+	const func = path.findAncestry(({node}) => isConditional(node)) !== undefined;
+	return (
+		!func &&
+		!!path.findAncestry(({node}) =>
+			node.type === "JSClassMethod" &&
+			node.key.type === "JSStaticPropertyKey" &&
+			node.key.value.type === "JSIdentifier" &&
+			node.key.value.name === "componentDidMount"
+		)
+	);
+}
 
 export default createVisitor({
 	name: "react/noDidMountSetState",
@@ -9,27 +22,13 @@ export default createVisitor({
 		const {node} = path;
 
 		if (
-			node.type === "JSClassMethod" &&
-			node.key.type === "JSStaticPropertyKey" &&
-			node.key.value.type === "JSIdentifier" &&
-			node.key.value.name === "componentDidMount" &&
-			insideClassComponent(path)
+			doesNodeMatchPattern(node, "this.setState") &&
+			insideClassComponent(path) &&
+			inComponentDidMount(path)
 		) {
-			path.traverse(
-				"body",
-				(childPath) => {
-					const childNode = childPath.node;
-					if (
-						doesNodeMatchPattern(childNode, "this.setState") &&
-						childPath.findAncestry((ancesPath) => isConditional(ancesPath.node)) ===
-						undefined
-					) {
-						childPath.context.addNodeDiagnostic(
-							childNode,
-							descriptions.LINT.REACT_NO_DID_MOUNT_SET_STATE,
-						);
-					}
-				},
+			path.context.addNodeDiagnostic(
+				node,
+				descriptions.LINT.REACT_NO_DID_MOUNT_SET_STATE,
 			);
 		}
 
