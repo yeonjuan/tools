@@ -90,28 +90,7 @@
     <html lang="aa-zz"></html>
                ^^^^^^^
 
-  ℹ Did you mean aa-AF?
-
-  - aa-zz
-  + aa-AF
-
-  ℹ Or one of these?
-
-  - aa-AL
-  - aa-DZ
-  - aa-AS
-  - aa-AD
-  - aa-AO
-  - aa-AI
-  - aa-AQ
-  - aa-AG
-  - aa-AR
-  - aa-AM
-  and 222 others...
-
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-⚠ Some diagnostics have been truncated. Use the --verbose-diagnostics flag to disable truncation.
 
 ✖ Found 1 problem
 
@@ -136,28 +115,7 @@
     <html lang="zz-AA"></html>
                ^^^^^^^
 
-  ℹ Did you mean az-AF?
-
-  - zz-AA
-  + az-AF
-
-  ℹ Or one of these?
-
-  - az-AL
-  - az-AS
-  - az-AD
-  - az-AO
-  - az-AI
-  - az-AQ
-  - az-AG
-  - az-AR
-  - az-AM
-  - az-AW
-  and 37 others...
-
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-⚠ Some diagnostics have been truncated. Use the --verbose-diagnostics flag to disable truncation.
 
 ✖ Found 1 problem
 
