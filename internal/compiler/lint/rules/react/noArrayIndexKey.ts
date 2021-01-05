@@ -148,7 +148,9 @@ export default createVisitor({
 					}
 				}
 			}
-		} else if (doesNodeMatchReactPattern(node, scope, "React.cloneElement")) {
+		}
+
+		if (doesNodeMatchReactPattern(node, scope, "React.cloneElement")) {
 			const keyValue = getKeyValue(path);
 			const reactChildrenArrayMethod = getReactChildrenArrayMethod(path, scope);
 			const arrayMethod = hasArrayMethod(path);
@@ -165,7 +167,9 @@ export default createVisitor({
 					);
 				}
 			}
-		} else if (node.type === "JSXElement" && hasJSXAttribute(node, "key")) {
+		}
+
+		if (node.type === "JSXElement" && hasJSXAttribute(node, "key")) {
 			let keyValue = undefined;
 			const keyAttribute = getJSXAttribute(node, "key");
 			if (keyAttribute) {
