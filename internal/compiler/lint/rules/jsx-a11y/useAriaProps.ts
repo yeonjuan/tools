@@ -4,6 +4,8 @@ import {descriptions} from "@internal/diagnostics";
 import {ARIAProperty, ariaPropsMap} from "@internal/compiler/lint/utils/aria";
 import {markup} from "@internal/markup";
 
+const ariaPropsArray = Array.from(ariaPropsMap).map((ariaProps) => ariaProps[0]);
+
 export default createVisitor({
 	name: "jsx-a11y/useAriaProps",
 	enter(path) {
@@ -14,10 +16,6 @@ export default createVisitor({
 			node.name.type === "JSXIdentifier" &&
 			node.name.name.indexOf("aria-") === 0
 		) {
-			const ariaPropsArray = Array.from(ariaPropsMap).map((ariaProps) =>
-				ariaProps[0]
-			);
-
 			const closestMatch = findClosestStringMatch(
 				node.name.name,
 				ariaPropsArray,
