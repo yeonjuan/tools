@@ -307,19 +307,13 @@ export function openDirectory(
 }
 
 // createWriteStream
-export function createWriteStream(
-	path: AbsoluteFilePath,
-	opts?: Parameters<typeof fs.createWriteStream>[1],
-): fs.WriteStream {
-	return fs.createWriteStream(path.join(), opts);
+export function createWriteStream(path: AbsoluteFilePath): fs.WriteStream {
+	return fs.createWriteStream(path.join(), {highWaterMark: Math.pow(2, 16)});
 }
 
 // createReadStream
-export function createReadStream(
-	path: AbsoluteFilePath,
-	opts?: Parameters<typeof fs.createReadStream>[1],
-): fs.ReadStream {
-	return fs.createReadStream(path.join(), opts);
+export function createReadStream(path: AbsoluteFilePath): fs.ReadStream {
+	return fs.createReadStream(path.join(), {highWaterMark: Math.pow(2, 16)});
 }
 
 // Super special sync methods that we should only use sparingly if there's absolutely no way to do them async
