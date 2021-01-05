@@ -655,7 +655,7 @@ export default class MemoryFileSystem {
 	): Promise<void> {
 		// Fetch the manifest
 		const manifestRaw = content ?? (await readFileText(path));
-		const hash = crypto.createHash("sha1").update(manifestRaw).digest("hex");
+		const hash = crypto.createHash("sha256").update(manifestRaw).digest("hex");
 
 		const consumer = json.consumeValue({
 			path,
