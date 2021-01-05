@@ -6,9 +6,6 @@ import {JSXElement} from "@internal/ast";
 const HEADINGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
 
 function hasHeadingContent(node: JSXElement): boolean {
-	if (!HEADINGS.some((heading) => isJSXElement(node, heading))) {
-		return false;
-	}
 	return (
 		hasJSXAttribute(node, "dangerouslySetInnerHTML") ||
 		(node.children.length > 0 &&
