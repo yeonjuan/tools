@@ -2,10 +2,10 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - test4
   pull_request:
     branches:
-      - main
+      - test4
 
 jobs:
   lint:

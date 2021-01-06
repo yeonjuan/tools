@@ -387,11 +387,9 @@ export default class TestServerWorker {
 		const {options: opts} = runner;
 
 		try {
-			const promises: Promise<void>[] = [];
 			for (let i = 0; i < 10; i++) {
-				promises.push(this.runTest());
+				await this.runTest();
 			}
-			await Promise.all(promises);
 
 			for (const path of this.preparedPaths) {
 				const result = await bridge.events.teardownTest.call(path);
